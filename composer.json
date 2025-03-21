@@ -1,0 +1,80 @@
+{
+  "name": "waterloobae/quizconverter",
+  "description": "Quiz converter for LMSs",
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+      "ext-zip": "*",
+      "ext-json": "*",
+      "h5p/h5p-core": "dev-master", 
+      "h5p/h5p-editor": "dev-master",
+      "h5p/h5p-multi-choice": "dev-master",
+      "h5p/h5p-question-set": "dev-master",
+      "h5p/h5p-arithmetic-quiz": "dev-master"
+  },
+  "repositories": [
+      {
+          "type": "package",
+          "package": {
+              "name": "h5p/h5p-multi-choice",
+              "version": "dev-master",
+              "source": {
+                  "url": "https://github.com/h5p/h5p-multi-choice.git",
+                  "type": "git",
+                  "reference": "master"
+              },
+              "autoload": {
+                  "classmap": [
+                      "."
+                  ]
+              }
+          }
+      },
+      {
+          "type": "package",
+          "package": {
+              "name": "h5p/h5p-question-set",
+              "version": "dev-master",
+              "source": {
+                  "url": "https://github.com/h5p/h5p-question-set.git",
+                  "type": "git",
+                  "reference": "master"
+              },
+              "autoload": {
+                  "classmap": [
+                      "."
+                  ]
+              }
+          }
+      },
+      {
+          "type": "package",
+          "package": {
+              "name": "h5p/h5p-arithmetic-quiz",
+              "version": "dev-master",
+              "source": {
+                  "url": "https://github.com/h5p/h5p-arithmetic-quiz.git",
+                  "type": "git",
+                  "reference": "master"
+              },
+              "autoload": {
+                  "classmap": [
+                      "."
+                  ]
+              }
+          }
+      }
+  ],
+  "autoload": {
+      "psr-4": {
+          "Waterloobae\\QuizConverter\\": "src/",
+          "H5P\\": "vendor/h5p/h5p-core/"
+      }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  }
+}

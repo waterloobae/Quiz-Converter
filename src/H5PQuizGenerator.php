@@ -1,0 +1,149 @@
+<?php
+namespace Waterloobae\QuizConverter;
+use ZipArchive;
+use Exception;
+
+class H5PQuizGenerator {
+    private $questions;
+    private $h5pDir;
+    private $outputFile;
+
+    public function __construct(array $questions, $outputFile = "quiz.h5p") {
+        $this->questions = $questions;
+        $this->h5pDir = sys_get_temp_dir() . "/h5p_quiz_" . uniqid();
+        $this->outputFile = $outputFile;
+
+        if (!mkdir($this->h5pDir, 0777, true)) {
+            throw new Exception("Failed to create temp directory.");
+        }
+    }
+
+    public function generate() {
+        $content = $this->buildContentJson();
+        $this->saveJsonFile("content/content.json", $content);
+        $this->addMetadata();
+        $this->zipH5P();
+    }
+
+    private function buildContentJson() {
+        $questionsArray = [];
+
+        foreach ($this->questions as $question) {
+            if ($question['type'] === 'multiple_choice') {
+                $questionsArray[] = $this->createMultipleChoice($question);
+            } elseif ($question['type'] === 'numeric') {
+                $questionsArray[] = $this->createNumericInput($question);
+            }
+        }
+
+        return [
+            "title" => "Generated Quiz",
+            "language" => "en",
+            "mainLibrary" => "H5P.QuestionSet",
+            "preloadedDependencies" => [
+                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 17],
+                ["machineName" => "H5P.MultiChoice", "majorVersion" => 1, "minorVersion" => 16],
+                ["machineName" => "H5P.ArithmeticQuiz", "majorVersion" => 1, "minorVersion" => 0]
+            ],
+            "questions" => $questionsArray
+        ];
+    }
+
+    private function createMultipleChoice($question) {
+        return [
+            "library" => "H5P.MultiChoice 1.16",
+            "params" => [
+                "question" => $question['text'],
+                "choices" => array_map(function($choice) {
+                    return [
+                        "text" => $choice["text"],
+                        "correct" => $choice["correct"]
+                    ];
+                }, $question['choices']),
+                "l10n" => ["checkAnswer" => "Check", "submitAnswer" => "Submit"],
+                "showSolutions" => true,  // Enable solution display
+                "solution" => ["text" => $question['solution'] ?? "No explanation available."]
+            ]
+        ];
+    }
+
+    private function createNumericInput($question) {
+        return [
+            "library" => "H5P.ArithmeticQuiz 1.0",
+            "params" => [
+                "question" => $question['text'],
+                "answer" => (int) $question['answer'],
+                "l10n" => ["checkAnswer" => "Check", "submitAnswer" => "Submit"],
+                "showSolutions" => true,  // Enable solution display
+                "solution" => ["text" => $question['solution'] ?? "No explanation available."]
+            ]
+        ];
+    }
+
+    private function addMetadata() {
+        $this->saveJsonFile("h5p.json", [
+            "title" => "Generated Quiz",
+            "mainLibrary" => "H5P.QuestionSet",
+            "preloadedDependencies" => [
+                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 17]
+            ]
+        ]);
+    }
+
+    private function saveJsonFile($filename, $data) {
+        $filePath = "{$this->h5pDir}/$filename";
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0777, true);
+        }
+        file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT));
+    }
+
+    private function zipH5P() {
+        $zip = new ZipArchive();
+        if ($zip->open($this->outputFile, ZipArchive::CREATE) === true) {
+            $this->addFilesToZip($zip, $this->h5pDir);
+            $zip->close();
+        } else {
+            throw new Exception("Failed to create H5P file.");
+        }
+    }
+
+    private function addFilesToZip($zip, $folder, $basePath = "") {
+        $files = scandir($folder);
+        foreach ($files as $file) {
+            if ($file === "." || $file === "..") continue;
+            $filePath = "$folder/$file";
+            $relativePath = $basePath . $file;
+            if (is_dir($filePath)) {
+                $this->addFilesToZip($zip, $filePath, $relativePath . "/");
+            } else {
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+    }
+}
+
+// Example Usage:
+$quizQuestions = [
+    [
+        "type" => "multiple_choice",
+        "text" => "What is \\(x^2\\) when \\(x = 2\\)?",
+        "choices" => [
+            ["text" => "\\(2\\)", "correct" => false],
+            ["text" => "\\(4\\)", "correct" => true],
+            ["text" => "\\(8\\)", "correct" => false]
+        ],
+        "solution" => "Since \\(x = 2\\), we calculate \\(2^2 = 4\\)."
+    ],
+    [
+        "type" => "numeric",
+        "text" => "Solve for \\(x\\) in \\(x + 3 = 5\\)",
+        "answer" => 2,
+        "solution" => "Subtract 3 from both sides: \\(x = 5 - 3 = 2\\)."
+    ]
+];
+
+$quizGenerator = new H5PQuizGenerator($quizQuestions);
+$quizGenerator->generate();
+
+echo "Quiz H5P file with solutions created successfully!";

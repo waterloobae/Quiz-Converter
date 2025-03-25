@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4d6ef9d11204277cebd780d59e0b797",
+    "content-hash": "592d25c07e979b521b78c92f4d67979b",
     "packages": [
         {
             "name": "h5p/h5p-arithmetic-quiz",
@@ -146,6 +146,21 @@
             "time": "2025-01-31T10:45:45+00:00"
         },
         {
+            "name": "h5p/h5p-math-display",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/h5p/h5p-math-display.git",
+                "reference": "master"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "."
+                ]
+            }
+        },
+        {
             "name": "h5p/h5p-multi-choice",
             "version": "dev-master",
             "source": {
@@ -183,6 +198,7 @@
         "h5p/h5p-arithmetic-quiz": 20,
         "h5p/h5p-core": 20,
         "h5p/h5p-editor": 20,
+        "h5p/h5p-math-display": 20,
         "h5p/h5p-multi-choice": 20,
         "h5p/h5p-question-set": 20
     },

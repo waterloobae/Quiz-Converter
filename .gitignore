@@ -1,7 +1,7 @@
 composer.phar
 /vendor/
 /mysql/
-# /public/
+/public/
 /.vscode
 Dockerfile
 docker-compose.yml

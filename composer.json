@@ -11,9 +11,28 @@
       "h5p/h5p-editor": "dev-master",
       "h5p/h5p-multi-choice": "dev-master",
       "h5p/h5p-question-set": "dev-master",
-      "h5p/h5p-arithmetic-quiz": "dev-master"
+      "h5p/h5p-arithmetic-quiz": "dev-master",
+      "h5p/h5p-math-display": "dev-master"
+
   },
   "repositories": [
+      {
+          "type": "package",
+          "package": {
+              "name": "h5p/h5p-math-display",
+              "version": "dev-master",
+              "source": {
+                  "url": "https://github.com/h5p/h5p-math-display.git",
+                  "type": "git",
+                  "reference": "master"
+              },
+              "autoload": {
+                  "classmap": [
+                      "."
+                  ]
+              }
+          }
+      },
       {
           "type": "package",
           "package": {

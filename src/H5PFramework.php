@@ -179,6 +179,7 @@ class H5PFramework implements H5PFrameworkInterface {
   }
 
   public function loadLibrary($machineName, $majorVersion, $minorVersion) {
+
     return NULL;
   }
 

@@ -129,7 +129,7 @@ class H5PQuizGenerator {
               "div"
             ],
             "preloadedDependencies" => [
-                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 17],
+                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 20],
                 ["machineName" => "H5P.MultiChoice", "majorVersion" => 1, "minorVersion" => 16],
                 ["machineName" => "H5P.ArithmeticQuiz", "majorVersion" => 1, "minorVersion" => 0],
                 ["machineName" => "H5P.MathDisplay", "majorVersion" => 1, "minorVersion" => 0]

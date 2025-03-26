@@ -37,15 +37,53 @@ class H5PQuizGenerator {
         }
 
         return [
-            "title" => "Generated Quiz",
-            "language" => "en",
-            "mainLibrary" => "H5P.QuestionSet",
-            "preloadedDependencies" => [
-                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 17],
-                ["machineName" => "H5P.MultiChoice", "majorVersion" => 1, "minorVersion" => 16],
-                ["machineName" => "H5P.ArithmeticQuiz", "majorVersion" => 1, "minorVersion" => 0]
+            "introPage" => [
+                "showIntroPage" => false,
+                "startButtonText" => "Start Quiz",
+                "introduction" => "Welcome to the quiz! Please answer the following questions."
             ],
-            "questions" => $questionsArray
+            "progressType" => "dots",
+            "passPercentage" => 50,
+            "questions" => $questionsArray,
+            "disableBackwardsNavigation" => false,
+            "randomQuestions" => false,
+            "endGame" => [
+                "showResultPage" => true,
+                "showSolutionButton" => true,
+                "showRetryButton" => true,
+                "noResultMessage" => "Finished",
+                "message" => "Your result: ",
+                "scoreBarLabel" => "You got @finals out of @totals points",
+                "overallFeedback" => [
+                    "from" => 0,
+                    "to" => 100
+                ],
+                "solutionButtonText" => "Show solution",
+                "retryButtonText" => "Retry",
+                "finishButtonText" => "Finish",
+                "submitButtonText" => "Submit",
+                "showAnimations" => false,
+                "skippable" => false,
+                "skipButtonText" => "Skip video"
+            ],
+            "override" => [
+                "checkButton" => true
+            ],
+            "texts" => [
+                "prevButton" => "Previous question",
+                "nextButton" => "Next question",
+                "finishButton" => "Finish",
+                "submitButton" => "Submit",
+                "textualProgress" => "Question => @current of @total questions",
+                "jumpToQuestion" => "Question %d of %total",
+                "questionLabel" => "Question",
+                "readSpeakerProgress" => "Question @current of @total",
+                "unansweredText" => "Unanswered",
+                "answeredText" => "Answered",
+                "currentQuestionText" => "Current question",
+                "navigationLabel" => "Questions",
+                "questionSetInstruction" => "Choose question to display",
+            ]
         ];
     }
 
@@ -54,7 +92,7 @@ class H5PQuizGenerator {
             "library" => "H5P.MultiChoice 1.16",
             "params" => [
                 "question" => $question['text'],
-                "choices" => array_map(function($choice) {
+                "answers" => array_map(function($choice) {
                     return [
                         "text" => $choice["text"],
                         "correct" => $choice["correct"]
@@ -83,10 +121,23 @@ class H5PQuizGenerator {
     private function addMetadata() {
         $this->saveJsonFile("h5p.json", [
             "title" => "Generated Quiz",
+            "language" => "en",
             "mainLibrary" => "H5P.QuestionSet",
+            "license" => "U",
+            "defaultLanguage" => "en",
+            "embedTypes" => [
+              "div"
+            ],
             "preloadedDependencies" => [
-                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 17]
-            ]
+                ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 17],
+                ["machineName" => "H5P.MultiChoice", "majorVersion" => 1, "minorVersion" => 16],
+                ["machineName" => "H5P.ArithmeticQuiz", "majorVersion" => 1, "minorVersion" => 0],
+                ["machineName" => "H5P.MathDisplay", "majorVersion" => 1, "minorVersion" => 0]
+            ],
+            "preloadedJS" => [
+                ["path" => "https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"]
+            ],
+            "extraTitle" => "Testing-Question-Set"
         ]);
     }
 
@@ -124,6 +175,7 @@ class H5PQuizGenerator {
 }
 
 // Example Usage:
+/**
 $quizQuestions = [
     [
         "type" => "multiple_choice",
@@ -140,10 +192,11 @@ $quizQuestions = [
         "text" => "Solve for \\(x\\) in \\(x + 3 = 5\\)",
         "answer" => 2,
         "solution" => "Subtract 3 from both sides: \\(x = 5 - 3 = 2\\)."
-    ]
-];
-
-$quizGenerator = new H5PQuizGenerator($quizQuestions);
-$quizGenerator->generate();
-
-echo "Quiz H5P file with solutions created successfully!";
+        ]
+    ];
+    
+    $quizGenerator = new H5PQuizGenerator($quizQuestions);
+    $quizGenerator->generate();
+    
+    echo "Quiz H5P file with solutions created successfully!";
+    */

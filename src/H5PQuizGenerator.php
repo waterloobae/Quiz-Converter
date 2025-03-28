@@ -31,7 +31,7 @@ class H5PQuizGenerator {
         foreach ($this->questions as $question) {
             if ($question['type'] === 'multiple_choice') {
                 $questionsArray[] = $this->createMultipleChoice($question);
-            } elseif ($question['type'] === 'numeric') {
+            } elseif ($question['type'] === 'blank') {
                 $questionsArray[] = $this->createNumericInput($question);
             }
         }
@@ -107,12 +107,14 @@ class H5PQuizGenerator {
 
     private function createNumericInput($question) {
         return [
-            "library" => "H5P.ArithmeticQuiz 1.0",
+            "library" => "H5P.Blanks 1.14",
             "params" => [
-                "question" => $question['text'],
-                "answer" => (int) $question['answer'],
-                "l10n" => ["checkAnswer" => "Check", "submitAnswer" => "Submit"],
-                "showSolutions" => true,  // Enable solution display
+                "questions" => [ $question['text']. "<br><br>*" . $question['answer'] . "*" 
+                ],
+                "behaviour" => [
+                    "enableRetry" => true,
+                    "enableSolutionsButton" => true
+                ],
                 "solution" => ["text" => $question['solution'] ?? "No explanation available."]
             ]
         ];
@@ -131,7 +133,7 @@ class H5PQuizGenerator {
             "preloadedDependencies" => [
                 ["machineName" => "H5P.QuestionSet", "majorVersion" => 1, "minorVersion" => 20],
                 ["machineName" => "H5P.MultiChoice", "majorVersion" => 1, "minorVersion" => 16],
-                ["machineName" => "H5P.ArithmeticQuiz", "majorVersion" => 1, "minorVersion" => 0],
+                ["machineName" => "H5P.Blank", "majorVersion" => 1, "minorVersion" => 14],
                 ["machineName" => "H5P.MathDisplay", "majorVersion" => 1, "minorVersion" => 0]
             ],
             "preloadedJS" => [
